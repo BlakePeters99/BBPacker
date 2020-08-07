@@ -1,14 +1,14 @@
 package BBPacker;
-
+/*
 import BBPacker.Packer.Item;
 import BBPacker.Packer.Result;
 import BBPacker.Packer.Stats;
-/*
+*/
 import edu.calpoly.csc349.Knapsack.BBPacker;
 import edu.calpoly.csc349.Knapsack.Packer.Item;
 import edu.calpoly.csc349.Knapsack.Packer.Result;
 import edu.calpoly.csc349.Knapsack.Packer.Stats;
-*/
+
 public class BBPackerTester {
    public static class MyItem implements Item {
       public int value;     // Total value of the pack
@@ -74,7 +74,16 @@ public class BBPackerTester {
 
    public static void main(String[] args) {
       BBPacker packer = new BBPacker();
-
+      
+      BBTest test0 = new BBTest("Good BB Test", new Item[] {
+       new MyItem(121, 12),
+       new MyItem(70, 7),
+       new MyItem(60, 6),
+       new MyItem(49, 5),
+       new MyItem(48, 5),
+       new MyItem(38, 4)
+      }, new Stats(49,14,24,0));
+      
       BBTest test1 = new BBTest("Standard Test", new Item[] {
          new MyItem(14, 3),
          new MyItem(30, 6),
@@ -99,7 +108,7 @@ public class BBPackerTester {
       BBTest test4 = new BBTest("Random Item Test", randomItemCreator(
        new RdmItemsDesc(30000,0, 101, 1, 20)), new Stats(5,3000,24,0));
 
-      BBTest[] testArray = { test1, test2, test3 };
+      BBTest[] testArray = { test0, test1, test2, test3 };
       Item[] items, packItems;
       int maxWeight, totalValue, totalWeight;
       Result result;
