@@ -50,7 +50,8 @@ public class BBPackerTester {
       public int minRngW;
       public int maxRngW;
 
-      public RdmItemsDesc (int amount, int minRngV, int maxRngV, int minRngW, int maxRngW) {
+      public RdmItemsDesc (int amount, int minRngV, int maxRngV, int minRngW,
+       int maxRngW) {
          this.amount = amount;
          this.minRngV = minRngV;
          this.maxRngV = maxRngV;
@@ -58,12 +59,15 @@ public class BBPackerTester {
          this.maxRngW = maxRngW;
       }
    }
+
    public static Item[] randomItemCreator(RdmItemsDesc desc) {
       Item[] itemArray = new Item[desc.amount];
-      for (int i = 0; i < desc.amount; i++){
+
+      for (int i = 0; i < desc.amount; i++) {
          itemArray[i] = new MyItem((int) (Math.random() *
           (desc.maxRngV - desc.minRngV + 1) + desc.minRngV),
-          (int) (Math.random() * (desc.maxRngW - desc.minRngW + 1) + desc.minRngW));
+          (int) (Math.random() * (desc.maxRngW - desc.minRngW + 1)
+          + desc.minRngW));
       }
       return itemArray;
    }
@@ -95,7 +99,7 @@ public class BBPackerTester {
       BBTest test4 = new BBTest("Random Item Test", randomItemCreator(
        new RdmItemsDesc(30000,0, 101, 1, 20)), new Stats(5,3000,24,0));
 
-      BBTest[] testArray = {test1, test2, test3};
+      BBTest[] testArray = { test1, test2, test3 };
       Item[] items, packItems;
       int maxWeight, totalValue, totalWeight;
       Result result;
@@ -114,7 +118,8 @@ public class BBPackerTester {
             packItems = result.items;
 
             for (Item i : packItems) {
-                System.out.println("Item Weight: " + i.getWeight() + "\t" + "Item Value: " + i.getValue());
+                System.out.println("Item Weight: " + i.getWeight() + "\t"
+                 + "Item Value: " + i.getValue());
                 totalValue += i.getValue();
                 totalWeight += i.getWeight();
             }
@@ -122,13 +127,16 @@ public class BBPackerTester {
 
             // Checking for correct solution
             if (totalValue < test.stats.value) {
-                System.out.println("Test: " + test.TestName + " total value " + totalValue +
-                        " is not equal to the optimal value " + test.stats.value + "\n");
+                System.out.println("Test: " + test.TestName + " total value "
+                 + totalValue + " is not equal to the optimal value "
+                 + test.stats.value + "\n");
             } else if (totalWeight > test.stats.weight) {
-                System.out.println("Test: " + test.TestName + " total weight " + totalWeight +
-                        " is greater than the max weight " + test.stats.weight + "\n");
+                System.out.println("Test: " + test.TestName + " total weight "
+                 + totalWeight + " is greater than the max weight "
+                 + test.stats.weight + "\n");
             } else {
-                System.out.println("Successful test for " + test.TestName + " with total value: " + totalValue + "\n");
+                System.out.println("Successful test for " + test.TestName
+                 + " with total value: " + totalValue + "\n");
             }*/
       }
    }

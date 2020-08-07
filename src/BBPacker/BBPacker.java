@@ -19,42 +19,41 @@ public class BBPacker implements Packer {
          }
       });
 
-      int bestValue = 0;
-      int currentValue = 0;
-      int currentWeight = 0;
+      int bestValue = 0, currValue = 0, currWeight = 0;
       Item item;
       Stack<Item> stack = new Stack<Item>(), bestStack = new Stack<Item>();
 
       for (Item i : items) {
-         System.out.printf("Item Weight: %d\t Item Val: %d\tItem ratio: %.2f\n",
-                 i.getWeight(), i.getValue(), (float)i.getValue()/i.getWeight());
+         System.out.printf("Item Wgt: %d\t Item Val: %d\tItem ratio: %.2f\n",
+          i.getWeight(), i.getValue(), (float)i.getValue()/i.getWeight());
 
-         while (!stack.isEmpty() && currentWeight + i.getWeight() > maxWeight) {
+         while (!stack.isEmpty() && currWeight + i.getWeight() > maxWeight) {
             item = stack.pop();
-            currentWeight -= item.getWeight();
-            currentValue -= item.getValue();
+            currWeight -= item.getWeight();
+            currValue -= item.getValue();
          }
 
-         if (currentWeight + i.getWeight() <= maxWeight) {
+         if (currWeight + i.getWeight() <= maxWeight) {
             stack.push(i);
-            currentWeight += i.getWeight();
-            currentValue += i.getValue();
+            currWeight += i.getWeight();
+            currValue += i.getValue();
          }
 
-         if (currentValue > bestValue) {
-
+         if (currValue > bestValue) {
             bestStack = (Stack<Item>) stack.clone();
-            bestValue = currentValue;
+            bestValue = currValue;
          }
       }
 
       Iterator<Item> itr = bestStack.iterator();
       Item currentItem;
-      System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~BEST STACK~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+      System.out.println("~~~~~~~~~~~~~~~~~~~~BEST STACK~~~~~~~~~~~~~~~~~~~");
       while (itr.hasNext()) {
          currentItem = itr.next();
-         System.out.printf("Item Weight: %d\t Item Val: %d\tItem ratio: %.2f\n",
-                 currentItem.getWeight(), currentItem.getValue(), (float)currentItem.getValue()/currentItem.getWeight());
+         System.out.printf("Item Weight: %d\t Item Val: %d\t"
+          + "Item ratio: %.2f\n", currentItem.getWeight(),
+          currentItem.getValue(),
+          (float)currentItem.getValue() / currentItem.getWeight());
       }
 
       return null;
