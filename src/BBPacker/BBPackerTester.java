@@ -76,24 +76,24 @@ public class BBPackerTester {
       BBPacker packer = new BBPacker();
 
       BBTest test1 = new BBTest("Standard Test", new Item[] {
-              new MyItem(14, 3),
-              new MyItem(30, 6),
-              new MyItem(3, 1),
-              new MyItem(19, 4)
+         new MyItem(14, 3),
+         new MyItem(30, 6),
+         new MyItem(3, 1),
+         new MyItem(19, 4)
       }, new Stats(49,10,24,0));
 
       BBTest test2 = new BBTest("No Item Solution Test", new Item[] {
-              new MyItem(14, 3),
-              new MyItem(30, 6),
-              new MyItem(3, 1),
-              new MyItem(19, 4)
+         new MyItem(14, 3),
+         new MyItem(30, 6),
+         new MyItem(3, 1),
+         new MyItem(19, 4)
       }, new Stats(0,0,24,0));
 
       BBTest test3 = new BBTest("Large Weight Test", new Item[] {
-              new MyItem(14, 3),
-              new MyItem(30, 6),
-              new MyItem(3, 1),
-              new MyItem(19, 4)
+         new MyItem(14, 3),
+         new MyItem(30, 6),
+         new MyItem(3, 1),
+         new MyItem(19, 4)
       }, new Stats(49,100000,24,0));
 
       BBTest test4 = new BBTest("Random Item Test", randomItemCreator(
@@ -113,31 +113,32 @@ public class BBPackerTester {
 
          System.out.println("\n\n" + test.TestName);
          time = System.currentTimeMillis();
-         /*result = */packer.packItems(items, maxWeight, true);
-            /*result.stats.runTime = System.currentTimeMillis() - time;
+         result = packer.packItems(items, maxWeight, true);
+            result.stats.runTime = System.currentTimeMillis() - time;
             packItems = result.items;
 
             for (Item i : packItems) {
-                System.out.println("Item Weight: " + i.getWeight() + "\t"
-                 + "Item Value: " + i.getValue());
-                totalValue += i.getValue();
-                totalWeight += i.getWeight();
+               System.out.printf("Item Weight: %d\t Item Val: %d\t"
+                + "Item ratio: %.2f\n", i.getWeight(), i.getValue(),
+                (float)i.getValue() / i.getWeight());
+               totalValue += i.getValue();
+               totalWeight += i.getWeight();
             }
             System.out.println("Runtime: " + result.stats.runTime);
 
             // Checking for correct solution
             if (totalValue < test.stats.value) {
-                System.out.println("Test: " + test.TestName + " total value "
-                 + totalValue + " is not equal to the optimal value "
-                 + test.stats.value + "\n");
+               System.out.println("Test: " + test.TestName + " total value "
+                + totalValue + " is not equal to the optimal value "
+                + test.stats.value + "\n");
             } else if (totalWeight > test.stats.weight) {
-                System.out.println("Test: " + test.TestName + " total weight "
-                 + totalWeight + " is greater than the max weight "
-                 + test.stats.weight + "\n");
+               System.out.println("Test: " + test.TestName + " total weight "
+                + totalWeight + " is greater than the max weight "
+                + test.stats.weight + "\n");
             } else {
-                System.out.println("Successful test for " + test.TestName
-                 + " with total value: " + totalValue + "\n");
-            }*/
+               System.out.println("Successful test for " + test.TestName
+                + " with total value: " + totalValue + "\n");
+            }
       }
    }
 }

@@ -19,7 +19,7 @@ public class BBPacker implements Packer {
          }
       });
 
-      int bestValue = 0, currValue = 0, currWeight = 0;
+      int bestValue = 0, bestWeight = 0, currValue = 0, currWeight = 0;
       Item item;
       Stack<Item> stack = new Stack<Item>(), bestStack = new Stack<Item>();
 
@@ -42,11 +42,31 @@ public class BBPacker implements Packer {
          if (currValue > bestValue) {
             bestStack = (Stack<Item>) stack.clone();
             bestValue = currValue;
+            bestWeight = currWeight;
          }
       }
 
+      System.out.println("Max Value:\t" + bestValue);
+
+      Stats stats = new Stats(bestValue, bestWeight, stack.size(), 0);
+      Result result;
+      if (bestStack.isEmpty())
+         result = new Result(new Item[0], stats);
+      else {
+         Item[] arr = bestStack.toArray(new Item[bestStack.size()]);
+         result = new Result(arr, stats);
+      }
+
+      return result;
+   }
+}
+
+/*    Possible code needed
+   // Debugging Code ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
       Iterator<Item> itr = bestStack.iterator();
       Item currentItem;
+
+      System.out.println("Max Value:\t" + bestValue);
       System.out.println("~~~~~~~~~~~~~~~~~~~~BEST STACK~~~~~~~~~~~~~~~~~~~");
       while (itr.hasNext()) {
          currentItem = itr.next();
@@ -55,7 +75,6 @@ public class BBPacker implements Packer {
           currentItem.getValue(),
           (float)currentItem.getValue() / currentItem.getWeight());
       }
+   // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-      return null;
-   }
-}
+ */
