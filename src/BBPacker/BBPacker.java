@@ -7,6 +7,17 @@ import java.util.Iterator;
 import java.util.Stack;
 
 public class BBPacker implements Packer {
+   public static class StkInfo {
+      public int bestV;
+      public int bestW;
+      public Stack<Item> bestStack;
+      
+      public StkInfo (int bestV, int bestW, Stack<Item> bestStack) {
+         this.bestV = bestV;
+         this.bestW = bestW;
+         this.bestStack = bestStack;
+      }
+   }
    public Result packItems(Item[] items, int maxWeight, boolean verbose) {
       // sorting Items array by value/weight
       Collections.sort(Arrays.asList(items), new Comparator<Item>() {
@@ -18,46 +29,69 @@ public class BBPacker implements Packer {
             return  Float.compare(r2, r1);
          }
       });
-
-      int bestValue = 0, bestWeight = 0, currValue = 0, currWeight = 0;
+      
       Item item;
-      Stack<Item> stack = new Stack<Item>(), bestStack = new Stack<Item>();
+      Stack<Item> stack = new Stack<Item>(), bstack = new Stack<Item>();
+      
+      StkInfo startStack = new StkInfo(0,0, bstack);
+      
+      StkInfo solution = BestStack(startStack, stack, items, maxWeight,
+       0, 0, 0);
+      Iterator<Item> itr = solution.bestStack.iterator();
+      Item currentItem;
 
-      for (Item i : items) {
-         System.out.printf("Item Wgt: %d\t Item Val: %d\tItem ratio: %.2f\n",
-          i.getWeight(), i.getValue(), (float)i.getValue()/i.getWeight());
+      System.out.println("Max Value:\t" + solution.bestV);
 
-         while (!stack.isEmpty() && currWeight + i.getWeight() > maxWeight) {
-            item = stack.pop();
-            currWeight -= item.getWeight();
-            currValue -= item.getValue();
-         }
-
-         if (currWeight + i.getWeight() <= maxWeight) {
-            stack.push(i);
-            currWeight += i.getWeight();
-            currValue += i.getValue();
-         }
-
-         if (currValue > bestValue) {
-            bestStack = (Stack<Item>) stack.clone();
-            bestValue = currValue;
-            bestWeight = currWeight;
-         }
-      }
-
-      System.out.println("Max Value:\t" + bestValue);
-
-      Stats stats = new Stats(bestValue, bestWeight, stack.size(), 0);
       Result result;
-      if (bestStack.isEmpty())
+      if (solution.bestStack.isEmpty()) {
+         Stats stats = new Stats(solution.bestV, solution.bestW, 0, 0);
          result = new Result(new Item[0], stats);
+      }
       else {
-         Item[] arr = bestStack.toArray(new Item[bestStack.size()]);
+         Stats stats = new Stats(solution.bestV, solution.bestW,
+          solution.bestStack.size(), 0);
+         Item[] arr = solution.bestStack.toArray(
+          new Item[solution.bestStack.size()]);
          result = new Result(arr, stats);
       }
 
       return result;
+   }
+   public StkInfo BestStack (StkInfo best, Stack<Item> stack, Item[] items,
+    int maxW, int idx, int currV, int currW) {
+      
+      while (idx < items.length) {
+         if (currW + items[idx].getWeight() <= maxW) {
+            currV += items[idx].getValue();
+            currW += items[idx].getWeight();
+            //System.out.printf("Use (%d, %d), ", items[idx].getValue(), items[idx].getWeight());
+            stack.push(items[idx]);
+            
+            if (best.bestV < currV) {
+               best.bestStack = stack;//(Stack<Item>) stack.clone();
+               best.bestV = currV;
+               best.bestW = currW;
+               System.out.println("new best solution at " + best.bestV);
+            }
+            
+            StkInfo ret = BestStack(best, stack, items, maxW,
+             idx + 1, currV, currW);
+            if (ret == null) {
+               if (!stack.isEmpty()){
+                  Item item = stack.pop();
+                  currV -= item.getValue();
+                  currW -= item.getWeight();
+                  //System.out.printf("Drop (%d, %d)\t", item.getValue(), item.getWeight());
+               }
+            }
+         }
+         
+         idx++;
+      }
+      if (idx == items.length && stack.isEmpty()) {
+         return best;
+      }
+      return null;
    }
 }
 
@@ -76,5 +110,40 @@ public class BBPacker implements Packer {
           (float)currentItem.getValue() / currentItem.getWeight());
       }
    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+for (int i = 0; i < items.length; i++) {
+         //System.out.printf("Item Wgt: %d\t Item Val: %d\tItem ratio: %.2f\n",
+         // i.getWeight(), i.getValue(), (float)i.getValue()/i.getWeight());
+         while (!stack.isEmpty() && currWeight + items[i].getWeight() > maxWeight) {
+            item = stack.pop();
+            currWeight -= item.getWeight();
+            currValue -= item.getValue();
+            System.out.printf("Drop (%d, %d)\n", item.getValue(), item.getWeight());
+         }
 
+         if (currWeight + items[i].getWeight() <= maxWeight) {
+            System.out.printf("Use (%d, %d)\t", items[i].getValue(), items[i].getWeight());
+            stack.push(items[i]);
+            currWeight += items[i].getWeight();
+            currValue += items[i].getValue();
+            System.out.printf("CurV %d, CurW %d\n", currValue, currWeight);
+         }
+
+         if (currValue > bestValue) {
+            System.out.println("Best possible is " + currValue);
+            bestStack = (Stack<Item>) stack.clone();
+            bestValue = currValue;
+            bestWeight = currWeight;
+         }
+      }
+      
+       // Trying to find a way to make this recursive
+      for (int i = 0; i < items.length; i++) {
+         for (int j = i; j < items.length; j++) {
+            if (currWeight + items[j].getWeight() <= maxWeight) {
+               stack.push(items[j]);
+               System.out.printf("Use (%d, %d), ", items[j].getValue(), items[j].getWeight());
+   
+            }
+         }
+      }
  */
