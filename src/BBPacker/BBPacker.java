@@ -34,10 +34,9 @@ public class BBPacker implements Packer {
       Stack<Item> stack = new Stack<Item>(), bStack = new Stack<Item>();
       StkInfo startStack = new StkInfo(0,0, bStack);
       
+      // BB recursion
       StkInfo solution = BestStack(startStack, stack, items, maxWeight,
        0, 0, 0);
-      Iterator<Item> itr = solution.bestStack.iterator();
-      Item currentItem;
 
       System.out.println("Max Value:\t" + solution.bestV);
 
