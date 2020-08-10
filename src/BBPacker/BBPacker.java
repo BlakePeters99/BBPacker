@@ -31,9 +31,8 @@ public class BBPacker implements Packer {
       });
       
       Item item;
-      Stack<Item> stack = new Stack<Item>(), bstack = new Stack<Item>();
-      
-      StkInfo startStack = new StkInfo(0,0, bstack);
+      Stack<Item> stack = new Stack<Item>(), bStack = new Stack<Item>();
+      StkInfo startStack = new StkInfo(0,0, bStack);
       
       StkInfo solution = BestStack(startStack, stack, items, maxWeight,
        0, 0, 0);
@@ -57,9 +56,9 @@ public class BBPacker implements Packer {
 
       return result;
    }
+   
    public StkInfo BestStack (StkInfo best, Stack<Item> stack, Item[] items,
     int maxW, int idx, int currV, int currW) {
-      
       while (idx < items.length) {
          if (currW + items[idx].getWeight() <= maxW) {
             currV += items[idx].getValue();
@@ -73,9 +72,10 @@ public class BBPacker implements Packer {
                best.bestW = currW;
                System.out.println("new best solution at " + best.bestV);
             }
-            
+            // Recursion
             StkInfo ret = BestStack(best, stack, items, maxW,
              idx + 1, currV, currW);
+            
             if (ret == null) {
                if (!stack.isEmpty()){
                   Item item = stack.pop();
