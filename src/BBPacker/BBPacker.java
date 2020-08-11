@@ -21,16 +21,36 @@ public class BBPacker implements Packer {
       LinkedList<Item> bestStack = new LinkedList<>();
       LinkedList<Integer> index = new LinkedList();
       int idx = 0, currV = 0, currW = 0, bestV = 0, bestW = 0, i = 0;
+      int cutV, cutW;
+      float optimalV;
       Item item;
       
       // pushing on first elements to get first optimum solution
       System.out.printf("Start: ");
       
-      
       while(true) {
          for (; idx < items.length; idx++) {
             // tries to add items if possible
             for (; i < items.length; i++) {
+               optimalV = currV;
+               cutV = currV;
+               cutW = currW;
+               // Find Optimal Value
+               for (int j = i; j < items.length
+                && cutW + items[j].getWeight() <= maxWeight; j++) {
+                  cutV += items[j].getValue();
+                  cutW += items[j].getWeight();
+                  // Ask Clint why this is cutting more than his code
+                  // Optimal = previous val + ratio * weight remaining
+                  optimalV = cutV + (float) cutV / cutW * (maxWeight - cutW);
+               }
+               // Cuts for optimization
+               if (optimalV <= (float) bestV) {
+                  System.out.printf("best possible is %.0f ... cut\n",
+                   optimalV);
+                  break;
+               }
+               
                // Push new item onto stack
                if (currW + items[i].getWeight() <= maxWeight) {
                   currV += items[i].getValue();
@@ -40,13 +60,6 @@ public class BBPacker implements Packer {
                   stack.push(items[i]);
                   index.push(i);
                }
-               
-               // Cuts for optimization
-               if (currW > 0 && currV + (float) currV / currW *
-                (maxWeight - currW) <= (float) bestV) {
-                  System.out.printf("Cut ");
-                  break;
-               }
             }
             if (bestV < currV) {
                bestStack = (LinkedList<Item>) stack.clone();
@@ -54,10 +67,15 @@ public class BBPacker implements Packer {
                bestW = currW;
                System.out.println("new best solution at " + bestV);
             }
+            else {
+               // ask question about what other case Clint uses to keep this
+               // from repeating after cut
+               System.out.printf("%d doesn't beat %d\n", currV, bestV);
+            }
             
             if (!stack.isEmpty()) {
                item = stack.pop();
-               System.out.printf("Drop (%d, %d)\t", item.getValue(),
+               System.out.printf("Drop (%d, %d) and retry: ", item.getValue(),
                 item.getWeight());
                currV -= item.getValue();
                currW -= item.getWeight();
