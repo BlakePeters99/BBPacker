@@ -11,11 +11,13 @@ public class BBPacker implements Packer {
       public int bestV;
       public int bestW;
       public Stack<Item> bestStack;
+      public int end;
       
-      public StkInfo (int bestV, int bestW, Stack<Item> bestStack) {
+      public StkInfo (int bestV, int bestW, Stack<Item> bestStack, int end) {
          this.bestV = bestV;
          this.bestW = bestW;
          this.bestStack = bestStack;
+         this.end = end;
       }
    }
    public Result packItems(Item[] items, int maxWeight, boolean verbose) {
@@ -30,9 +32,9 @@ public class BBPacker implements Packer {
          }
       });
       
-      Item item;
-      Stack<Item> stack = new Stack<Item>(), bStack = new Stack<Item>();
-      StkInfo startStack = new StkInfo(0,0, bStack);
+      
+      Stack<Item> stack = new Stack<>(), bStack = new Stack<Item>();
+      StkInfo startStack = new StkInfo(0,0, bStack, 0);
       
       // BB recursion
       StkInfo solution = BestStack(startStack, stack, items, maxWeight,
@@ -58,7 +60,9 @@ public class BBPacker implements Packer {
    
    public StkInfo BestStack (StkInfo best, Stack<Item> stack, Item[] items,
     int maxW, int idx, int currV, int currW) {
+      Item item;
       while (idx < items.length) {
+
          if (currW + items[idx].getWeight() <= maxW) {
             currV += items[idx].getValue();
             currW += items[idx].getWeight();
@@ -66,31 +70,49 @@ public class BBPacker implements Packer {
             stack.push(items[idx]);
             
             if (best.bestV < currV) {
-               best.bestStack = stack;//(Stack<Item>) stack.clone();
+               best.bestStack = (Stack<Item>) stack.clone();
                best.bestV = currV;
                best.bestW = currW;
                System.out.println("new best solution at " + best.bestV);
             }
-            // Recursion
-            StkInfo ret = BestStack(best, stack, items, maxW,
-             idx + 1, currV, currW);
             
-            if (ret == null) {
-               if (!stack.isEmpty()){
-                  Item item = stack.pop();
-                  currV -= item.getValue();
-                  currW -= item.getWeight();
-                  //System.out.printf("Drop (%d, %d)\t", item.getValue(), item.getWeight());
-               }
+            if (currW > 0 && currV + (float)currV/currW *(maxW-currW) <= (float)best.bestV) {
+               //System.out.printf("Cut ");
+               best.end = 2;
+               return best;
             }
+            // Recursion
+            StkInfo ret = BestStack(best, stack, items, maxW, idx + 1, currV, currW);
+            if (ret.end > 0){
+               best = ret;
+            }
+            if (ret.end == 2 && !stack.isEmpty()) {
+               best.end = 1;
+               return best;
+            }
+            if (!stack.isEmpty()){
+               item = stack.lastElement();
+               Pop(stack);
+               currV -= item.getValue();
+               currW -= item.getWeight();
+               //System.out.printf("Drop (%d, %d)\t", item.getValue(), item.getWeight());
+            }
+            
          }
-         
+
          idx++;
       }
-      if (idx == items.length && stack.isEmpty()) {
+      if (stack.isEmpty()) {
+         best.end = 1;
          return best;
       }
-      return null;
+      
+      best.end = 0;
+      return best;
+   }
+   public static Stack<Item> Pop(Stack<Item> stack) {
+      stack.pop();
+      return stack;
    }
 }
 

@@ -108,7 +108,7 @@ public class BBPackerTester {
       BBTest test4 = new BBTest("Random Item Test", randomItemCreator(
        new RdmItemsDesc(30000,0, 101, 1, 20)), new Stats(5,3000,24,0));
 
-      BBTest[] testArray = { test0, test1, test2, test3, test4 };
+      BBTest[] testArray = { test0, test1, test2, test3 };
       Item[] items, packItems;
       int maxWeight, totalValue, totalWeight;
       Result result;
