@@ -151,3 +151,57 @@ public class BBPackerTester {
       }
    }
 }
+/*
+ public StkInfo BestStack (StkInfo best, Stack<Item> stack, Item[] items,
+    int maxW, int idx, int currV, int currW) {
+      Item item;
+      while (idx < items.length) {
+
+         if (currW + items[idx].getWeight() <= maxW) {
+            currV += items[idx].getValue();
+            currW += items[idx].getWeight();
+            //System.out.printf("Use (%d, %d), ", items[idx].getValue(), items[idx].getWeight());
+            stack.push(items[idx]);
+            
+            if (best.bestV < currV) {
+               best.bestStack = (Stack<Item>) stack.clone();
+               best.bestV = currV;
+               best.bestW = currW;
+               System.out.println("new best solution at " + best.bestV);
+            }
+            
+            if (currW > 0 && currV + (float)currV/currW *(maxW-currW) <= (float)best.bestV) {
+               //System.out.printf("Cut ");
+               best.end = 2;
+               return best;
+            }
+            // Recursion
+            StkInfo ret = BestStack(best, stack, items, maxW, idx + 1, currV, currW);
+            if (ret.end > 0){
+               best = ret;
+            }
+            if (ret.end == 2 && !stack.isEmpty()) {
+               best.end = 1;
+               return best;
+            }
+            if (!stack.isEmpty()){
+               item = stack.lastElement();
+               Pop(stack);
+               currV -= item.getValue();
+               currW -= item.getWeight();
+               //System.out.printf("Drop (%d, %d)\t", item.getValue(), item.getWeight());
+            }
+            
+         }
+
+         idx++;
+      }
+      if (stack.isEmpty()) {
+         best.end = 1;
+         return best;
+      }
+      
+      best.end = 0;
+      return best;
+   }
+ */
