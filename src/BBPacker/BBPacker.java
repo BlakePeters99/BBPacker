@@ -3,26 +3,21 @@ package BBPacker;
 import java.util.*;
 
 public class BBPacker implements Packer {
-   
-   
    public Result packItems(Item[] items, int maxWeight, boolean verbose) {
       // sorting Items array by value/weight
-      Collections.sort(Arrays.asList(items), new Comparator<Item>() {
-         @Override
-         public int compare(Item a, Item b) {
-            float r1 = (float) a.getValue() / (float) a.getWeight();
-            float r2 = (float) b.getValue() / (float) b.getWeight();
-            // Reverse order
-            return Float.compare(r2, r1);
-         }
+      Collections.sort(Arrays.asList(items), (a, b) -> {
+         float r1 = (float) a.getValue() / (float) a.getWeight();
+         float r2 = (float) b.getValue() / (float) b.getWeight();
+         // Reverse order
+         return Float.compare(r2, r1);
       });
       
       LinkedList<Item> stack = new LinkedList<>();
       LinkedList<Item> bestStack = new LinkedList<>();
       LinkedList<Integer> index = new LinkedList();
-      int idx = 0, currV = 0, currW = 0, bestV = 0, bestW = 0, i = 0;
+      int currV = 0, currW = 0, bestV = 0, bestW = 0, idx = 0;
       int cutV, cutW;
-      float optimalV;
+      int optimalV;
       Item item;
       
       // pushing on first elements to get first optimum solution
@@ -30,43 +25,43 @@ public class BBPacker implements Packer {
       
       while(true) {
          // tries to add items if possible
-         for (; i < items.length; i++) {
+         for (; idx < items.length; idx++) {
             optimalV = currV;
             cutV = currV;
             cutW = currW;
             // Find Optimal Value
-            for (int j = i; j < items.length
-             && cutW + items[j].getWeight() <= maxWeight; j++) {
-               cutV += items[j].getValue();
-               cutW += items[j].getWeight();
-               // Ask Clint why this is cutting more than his code
+            for (int i = idx; i < items.length
+             && cutW + items[i].getWeight() <= maxWeight; i++) {
+               cutV += items[i].getValue();
+               cutW += items[i].getWeight();
                // Optimal = previous val + ratio * weight remaining
-               optimalV = cutV + (float) cutV / cutW * (maxWeight - cutW);
+               optimalV = (int)((float)cutV + (float) items[i].getValue()
+                / (float)cutW * ((float)maxWeight - (float)cutW));
             }
             // Cuts for optimization
-            if (optimalV <= (float) bestV) {
-               System.out.printf("best possible is %.0f ... cut\n",
-                optimalV);
+            if (optimalV <= bestV) {
+               System.out.printf("best possible is %d ... cut\n", optimalV);
                break;
             }
             
             // Push new item onto stack
-            if (currW + items[i].getWeight() <= maxWeight) {
-               currV += items[i].getValue();
-               currW += items[i].getWeight();
-               System.out.printf("use (%d, %d), ", items[i].getValue(),
-                items[i].getWeight());
-               stack.push(items[i]);
-               index.push(i);
+            if (currW + items[idx].getWeight() <= maxWeight) {
+               currV += items[idx].getValue();
+               currW += items[idx].getWeight();
+               System.out.printf("use (%d, %d), ", items[idx].getValue(),
+                items[idx].getWeight());
+               stack.push(items[idx]);
+               index.push(idx);
             }
          }
+         // If current is better than best, new best
          if (bestV < currV) {
             bestStack = (LinkedList<Item>) stack.clone();
             bestV = currV;
             bestW = currW;
             System.out.println("new best solution at " + bestV);
          }
-         else if (i == items.length) {
+         else if (idx == items.length) {
             System.out.printf("%d doesn't beat %d\n", currV, bestV);
          }
          
@@ -76,16 +71,12 @@ public class BBPacker implements Packer {
              item.getWeight());
             currV -= item.getValue();
             currW -= item.getWeight();
-            i = index.pop() + 1;
+            idx = index.pop() + 1;
          }
+         // Finished
          else
             break;
       }
-      
-      // BB recursion
-      // StkInfo startStack = new StkInfo(0, 0, bStack, 0);
-      // StkInfo solution = BestStack(startStack, stack, items, maxWeight,
-      //0, 0, 0);
       
       System.out.println("Max Value:\t" + bestV);
       
@@ -107,6 +98,12 @@ public class BBPacker implements Packer {
    
    
    /*
+      
+      // BB recursion
+      // StkInfo startStack = new StkInfo(0, 0, bStack, 0);
+      // StkInfo solution = BestStack(startStack, stack, items, maxWeight,
+      //0, 0, 0);
+      
    public static class StkInfo {
       public int bestV;
       public int bestW;

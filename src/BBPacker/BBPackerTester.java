@@ -116,7 +116,7 @@ public class BBPackerTester {
        new MyItem(4, 4)
       }, new Stats(81,59,24,0));
       
-      BBTest[] testArray = { test0, test1, test2, test3, test5 };
+      BBTest[] testArray = { test0, test1, test2, test3, test5, test4 };
       Item[] items, packItems;
       int maxWeight, totalValue, totalWeight;
       Result result;
